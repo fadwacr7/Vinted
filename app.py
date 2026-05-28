@@ -296,6 +296,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/ping")
+def ping():
+    return "ok", 200
+
+
 @app.route("/analyze", methods=["POST"])
 def analyze():
     files = request.files.getlist("images")
