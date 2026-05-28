@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>VintedAI — Annonces Vinted professionnelles en quelques secondes</title>
+  <style>
+    :root{
+      --p:#09B1BA;--pd:#078890;--pl:#e6f9fa;
+      --dark:#0f172a;--text:#1e293b;--muted:#64748b;
+      --border:#e2e8f0;--bg:#f8fafc;--white:#fff;
+      --green:#10b981;--amber:#f59e0b;--red:#ef4444;
+      --sh:0 4px 24px rgba(0,0,0,.08);--r:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--text);line-height:1.6}
+    a{text-decoration:none}
+
+    /* ── NAV ── */
+    .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-in{max-width:1100px;margin:0 auto;height:64px;display:flex;align-items:center;gap:28px;padding:0 24px}
+    .nav-logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
+    .nav-ico{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--pd));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .nav-name{font-size:1.1rem;font-weight:900;color:var(--dark);letter-spacing:-.02em}
+    .nav-name b{color:var(--p)}
+    .nav-links{display:flex;gap:22px;list-style:none;flex:1}
+    .nav-links a{color:var(--muted);font-size:.88rem;font-weight:500;transition:color .15s}
+    .nav-links a:hover{color:var(--text)}
+    .nav-cta{margin-left:auto}
+    .btn-p{padding:9px 20px;background:var(--p);color:#fff;border:none;border-radius:9px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s;display:inline-block}
+    .btn-p:hover{background:var(--pd);transform:translateY(-1px)}
+    @media(max-width:700px){.nav-links{display:none}}
+
+    /* ── HERO ── */
+    .hero{background:linear-gradient(155deg,#f0fdfe 0%,#fff 55%);padding:72px 24px 60px;text-align:center;border-bottom:1px solid var(--border)}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--pl);color:var(--pd);border:1px solid rgba(9,177,186,.25);border-radius:100px;padding:5px 14px;font-size:.75rem;font-weight:700;margin-bottom:20px;letter-spacing:.02em}
+    .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:var(--dark);line-height:1.15;letter-spacing:-.03em;max-width:700px;margin:0 auto 16px}
+    .hero h1 em{color:var(--p);font-style:normal}
+    .hero p{font-size:1.05rem;color:var(--muted);max-width:520px;margin:0 auto 28px;line-height:1.7}
+    .hero-btns{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+    .btn-hero{padding:14px 32px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 18px rgba(9,177,186,.3);transition:all .2s}
+    .btn-hero:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(9,177,186,.4)}
+    .hero-trust{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:18px;font-size:.78rem;color:var(--muted);font-weight:600;flex-wrap:wrap}
+    .hero-trust span::before{content:"✓ "}
+
+    /* ── STATS BAR ── */
+    .stats{background:var(--dark);padding:28px 24px}
+    .stats-in{max-width:800px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center}
+    .sn{font-size:1.9rem;font-weight:900;color:var(--p);letter-spacing:-.03em;line-height:1}
+    .sl2{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:4px}
+    @media(max-width:480px){.sn{font-size:1.4rem}}
+
+    /* ── TOOL SECTION ── */
+    .tool-sec{padding:56px 24px 64px;background:var(--bg)}
+    .sec-hd{text-align:center;margin-bottom:36px}
+    .sec-lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:8px}
+    .sec-ttl{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:8px}
+    .sec-sub{color:var(--muted);font-size:.92rem}
+    .tool-wrap{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:420px 1fr;gap:24px;align-items:start}
+    @media(max-width:900px){.tool-wrap{grid-template-columns:1fr}}
+
+    /* ── CARDS ── */
+    .card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden}
+    .ch{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .ch h2{font-size:.95rem;font-weight:700}
+    .ci{width:30px;height:30px;border-radius:8px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:15px}
+    .cb{padding:20px}
+
+    /* ── DROP ZONE ── */
+    .drop-zone{border:2.5px dashed var(--border);border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+    .drop-zone:hover,.drop-zone.over{border-color:var(--p);background:var(--pl)}
+    .drop-zone.over{border-style:solid}
+    .dz-icon{font-size:44px;margin-bottom:12px}
+    .drop-zone h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+    .drop-zone p{font-size:.82rem;color:var(--muted);line-height:1.55}
+    .dz-btn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:10px 22px;background:var(--p);color:#fff;border:none;border-radius:9px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .18s}
+    .dz-btn:hover{background:var(--pd)}
+    .dz-fmts{margin-top:10px;font-size:.72rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+    .fmt-tag{background:var(--white);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-weight:600}
+
+    /* ── PHOTOS GRID ── */
+    #photos-section{display:none;margin-top:16px}
+    .photos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .photos-count{font-size:.82rem;font-weight:700}
+    .photos-count span{color:var(--p)}
+    .add-more-link{font-size:.78rem;color:var(--p);font-weight:700;cursor:pointer;text-decoration:underline;border:none;background:none}
+    .photos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .photo-thumb{aspect-ratio:1;border-radius:9px;overflow:hidden;position:relative;background:var(--bg);border:2px solid var(--border)}
+    .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo-thumb .th-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:.6rem;font-weight:700;padding:10px 5px 4px;text-align:center;text-transform:uppercase;letter-spacing:.05em}
+    .photo-thumb .th-rm{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;z-index:3}
+    .photo-thumb:hover .th-rm{opacity:1}
+    .photo-thumb .th-num{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.55);color:#fff;font-size:.6rem;font-weight:800;padding:2px 5px;border-radius:4px}
+    .ctr-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .dots{display:flex;gap:4px;flex-wrap:wrap;max-width:200px}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:all .18s;flex-shrink:0}
+    .dot.on{background:var(--p)}
+    .ctr-txt{font-size:.75rem;color:var(--muted);font-weight:600}
+    input[type=file]{display:none}
+    .err{background:#fee2e2;border:1px solid #fca5a5;border-radius:9px;padding:11px 13px;color:#991b1b;font-size:.82rem;margin-top:11px;display:none}
+    #gen-btn{width:100%;margin-top:14px;padding:14px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(9,177,186,.25)}
+    #gen-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(9,177,186,.35)}
+    #gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+    .spin{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+    @keyframes sp{to{transform:rotate(360deg)}}
+
+    /* ── LOADING / RESULTS ── */
+    .empty-s{text-align:center;padding:52px 20px;color:var(--muted)}
+    .empty-s .ei{font-size:52px;margin-bottom:14px}
+    .empty-s p{font-size:.86rem;line-height:1.8}
+    .load-s{text-align:center;padding:44px 20px;display:none}
+    .bspin{width:44px;height:44px;border:4px solid var(--pl);border-top-color:var(--p);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 14px}
+    .load-s strong{font-size:.98rem;margin-bottom:5px;display:block}
+    .load-s p{font-size:.82rem;color:var(--muted)}
+    .lsteps{list-style:none;margin-top:14px;text-align:left;display:inline-block}
+    .lsteps li{font-size:.78rem;color:var(--muted);padding:4px 0 4px 22px;position:relative;opacity:0;transform:translateY(3px);transition:all .28s}
+    .lsteps li::before{content:"·";position:absolute;left:6px;color:var(--p);font-size:1.1rem;line-height:1.2}
+    .lsteps li.market::before{content:"📊"}
+    .lsteps li.show{opacity:1;transform:none}
+    .lsteps li.done{color:var(--green)}
+    .lsteps li.done::before{content:"✓";color:var(--green);font-weight:800;font-size:.85rem}
+    #result{display:none}
+    .pstrip{display:flex;gap:7px;margin-bottom:16px;overflow-x:auto;padding-bottom:3px}
+    .pstrip img{width:56px;height:56px;object-fit:cover;border-radius:7px;border:2px solid var(--border);flex-shrink:0}
+    .tblock{background:linear-gradient(135deg,#1d4ed8,#1e40af);color:#fff;border-radius:12px;padding:17px 18px;margin-bottom:13px;position:relative}
+    .tblock .lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px}
+    .tblock .tv{font-size:1.05rem;font-weight:800;line-height:1.4;padding-right:60px}
+    .tblock .nbadge{display:inline-flex;align-items:center;gap:4px;margin-top:7px;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 9px;font-size:.68rem;font-weight:600}
+    .trow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}
+    .tag{display:flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:4px 9px;font-size:.76rem}
+    .te{font-size:13px}.tl{color:var(--muted);font-size:.63rem;display:block}.tv2{font-weight:700}
+    .eb{display:inline-flex;padding:2px 7px;border-radius:20px;font-size:.72rem;font-weight:700}
+    .e1{background:#d1fae5;color:#065f46}.e2{background:#dbeafe;color:#1e40af}.e3{background:#ede9fe;color:#5b21b6}.e4{background:#fef3c7;color:#92400e}.e5{background:#fee2e2;color:#991b1b}
+    .sl{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;margin-top:14px}
+    .mk-card{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:12px;padding:18px;color:#fff;margin-bottom:0}
+    .mk-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+    .mk-title{font-size:.92rem;font-weight:800;display:flex;align-items:center;gap:7px}
+    .mk-source-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700}
+    .src-marche{background:rgba(16,185,129,.25);border:1px solid rgba(16,185,129,.4)}
+    .src-ia{background:rgba(139,92,246,.25);border:1px solid rgba(139,92,246,.4)}
+    .mk-nb{font-size:.74rem;opacity:.6;margin-top:3px}
+    .prix-trio{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:9px;margin-bottom:12px}
+    .pt{background:rgba(255,255,255,.07);border-radius:9px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,.1)}
+    .pt.rec{background:rgba(9,177,186,.2);border-color:rgba(9,177,186,.45)}
+    .pt .ptl{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin-bottom:4px}
+    .pt .ptv{font-size:1.5rem;font-weight:800}
+    .pt.rec .ptv{font-size:1.75rem;color:#5eead4}
+    .pb-wrap{margin:14px 0 10px}
+    .pb-track{background:rgba(255,255,255,.12);border-radius:99px;height:8px;position:relative}
+    .pb-range{position:absolute;top:0;height:100%;background:rgba(255,255,255,.3);border-radius:99px}
+    .pb-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;background:#5eead4;border-radius:50%;box-shadow:0 0 0 3px rgba(94,234,212,.3)}
+    .pb-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:.68rem;opacity:.55}
+    .plat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+    .plat{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08)}
+    .pv{background:rgba(9,177,186,.25);border-color:rgba(9,177,186,.4)}.pl{background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.35)}
+    .src-list{list-style:none;max-height:190px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent;margin-bottom:10px}
+    .src-list li{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.76rem}
+    .src-list li:last-child{border:none}
+    .src-badge{font-size:.63rem;padding:2px 6px;border-radius:8px;font-weight:700;flex-shrink:0}
+    .sb-v{background:rgba(9,177,186,.35)}.sb-l{background:rgba(245,158,11,.3)}
+    .src-t{opacity:.65;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .src-p{font-weight:800;white-space:nowrap;flex-shrink:0}
+    .src-a{opacity:.45;font-size:.68rem;color:#fff;flex-shrink:0}
+    .src-a:hover{opacity:.9}
+    .just{background:rgba(255,255,255,.06);border-radius:8px;padding:9px 11px;font-size:.76rem;opacity:.8;line-height:1.55;font-style:italic}
+    .no-market{text-align:center;padding:12px;font-size:.78rem;opacity:.6}
+    .etat-box{border-radius:8px;padding:10px 13px;font-size:.82rem;display:flex;align-items:flex-start;gap:8px;margin-bottom:0}
+    .etat-ok{background:#f0fdf4;border:1px solid #86efac;color:#166534}
+    .etat-warn{background:#fffbeb;border:1px solid #fcd34d;color:#92400e}
+    .div{height:1px;background:var(--border);margin:14px 0}
+    .tbox{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px;font-size:.85rem;line-height:1.78;position:relative;margin-bottom:0}
+    .tbox .cb2{position:absolute;top:8px;right:8px}
+    .ht-groups{margin-bottom:8px}
+    .ht-group{margin-bottom:8px}
+    .ht-group-label{font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px}
+    .ht-chips{display:flex;flex-wrap:wrap;gap:5px}
+    .ht{border:none;border-radius:6px;padding:4px 9px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .14s}
+    .ht-marque{background:#dbeafe;color:#1e40af}.ht-marque:hover,.ht-marque.cp{background:#1e40af;color:#fff}
+    .ht-type{background:#dcfce7;color:#166534}.ht-type:hover,.ht-type.cp{background:#166534;color:#fff}
+    .ht-style{background:#fae8ff;color:#7e22ce}.ht-style:hover,.ht-style.cp{background:#7e22ce;color:#fff}
+    .ht-tendance{background:#fff7ed;color:#c2410c}.ht-tendance:hover,.ht-tendance.cp{background:#c2410c;color:#fff}
+    .ht-taille{background:#f0fdf4;color:#15803d}.ht-taille:hover,.ht-taille.cp{background:#15803d;color:#fff}
+    .ht-occasion{background:#fef9c3;color:#854d0e}.ht-occasion:hover,.ht-occasion.cp{background:#854d0e;color:#fff}
+    .ht-just{font-size:.74rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-style:italic;line-height:1.5}
+    .mens-box{background:linear-gradient(135deg,#f8fafc,var(--bg));border:1px solid var(--border);border-radius:9px;padding:13px;font-size:.82rem}
+    .mens-box p{line-height:1.65;color:var(--muted)}
+    .photo-tips{list-style:none;background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:12px 14px}
+    .photo-tips li{font-size:.8rem;color:#78350f;padding:4px 0;border-bottom:1px solid #fef3c7;display:flex;align-items:flex-start;gap:8px}
+    .photo-tips li:last-child{border:none}
+    .photo-tips li::before{content:"📸";flex-shrink:0}
+    .pts,.tips{list-style:none;margin-bottom:0}
+    .pts li,.tips li{display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;line-height:1.5}
+    .pts li:last-child,.tips li:last-child{border:none}
+    .pts li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+    .tipn{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0}
+    .cb1{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:4px 8px;font-size:.7rem;cursor:pointer;color:#fff;font-weight:700;transition:all .14s;white-space:nowrap;position:absolute;top:13px;right:13px}
+    .cb2{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.7rem;cursor:pointer;color:var(--text);font-weight:700;transition:all .14s;white-space:nowrap}
+    .cb1:hover,.cb2:hover{opacity:.75}
+    .cpd{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important}
+    .cp-all-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .18s;margin-top:14px}
+    .cp-all-btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+    .cp-ht-btn{width:100%;padding:9px;background:var(--bg);border:2px solid var(--border);color:var(--text);border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;margin-top:6px}
+    .cp-ht-btn:hover{border-color:var(--p);color:var(--p)}
+    .sec{margin-top:14px}
+
+    /* ── FEATURES ── */
+    .features{padding:72px 24px;background:var(--white)}
+    .feat-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    @media(max-width:768px){.feat-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.feat-grid{grid-template-columns:1fr}}
+    .feat-card{padding:24px;border-radius:var(--r);border:1px solid var(--border);background:var(--white);transition:all .2s;cursor:default}
+    .feat-card:hover{border-color:var(--p);box-shadow:0 4px 20px rgba(9,177,186,.1);transform:translateY(-3px)}
+    .feat-ico{font-size:2rem;margin-bottom:12px}
+    .feat-title{font-size:.95rem;font-weight:700;color:var(--dark);margin-bottom:6px}
+    .feat-desc{font-size:.83rem;color:var(--muted);line-height:1.65}
+
+    /* ── PRICING ── */
+    .pricing{padding:72px 24px;background:var(--bg)}
+    .price-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    @media(max-width:900px){.price-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:520px){.price-grid{grid-template-columns:1fr}}
+    .pc{background:var(--white);border:2px solid var(--border);border-radius:var(--r);padding:24px;position:relative;transition:all .2s}
+    .pc:hover{box-shadow:var(--sh)}
+    .pc.pop{border-color:var(--p);box-shadow:0 8px 32px rgba(9,177,186,.2)}
+    .pop-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;font-size:.7rem;font-weight:800;padding:3px 12px;border-radius:100px;white-space:nowrap}
+    .pc-name{font-size:.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+    .pc-price{margin-bottom:4px}
+    .pc-price .amt{font-size:2.2rem;font-weight:900;color:var(--dark);letter-spacing:-.03em}
+    .pc-price .per{font-size:.85rem;color:var(--muted)}
+    .pc-ppg{font-size:.72rem;color:var(--muted);margin-bottom:14px}
+    .pc-gen{font-size:.88rem;font-weight:700;color:var(--dark);margin-bottom:14px;padding:8px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .pc-feats{list-style:none;margin-bottom:18px}
+    .pc-feats li{font-size:.82rem;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:7px}
+    .pc-feats li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0}
+    .pc-btn{width:100%;padding:10px;border-radius:10px;font-size:.87rem;font-weight:700;cursor:pointer;transition:all .18s;border:2px solid var(--border);background:transparent;color:var(--text)}
+    .pc-btn:hover{border-color:var(--p);color:var(--p)}
+    .pc-btn.primary{background:var(--p);border-color:var(--p);color:#fff}
+    .pc-btn.primary:hover{background:var(--pd);border-color:var(--pd)}
+
+    /* ── FOOTER ── */
+    footer{background:var(--dark);color:rgba(255,255,255,.6);padding:52px 24px 28px}
+    .ft-in{max-width:1000px;margin:0 auto}
+    .ft-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+    @media(max-width:768px){.ft-top{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.ft-top{grid-template-columns:1fr}}
+    .ft-logo{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+    .ft-logo-ico{width:32px;height:32px;background:linear-gradient(135deg,var(--p),var(--pd));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .ft-logo-txt{font-size:1rem;font-weight:900;color:#fff}
+    .ft-desc{font-size:.82rem;line-height:1.7}
+    .ft-col-ttl{font-size:.78rem;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+    .ft-links{list-style:none}
+    .ft-links li{margin-bottom:8px}
+    .ft-links a{color:rgba(255,255,255,.5);font-size:.83rem;transition:color .15s}
+    .ft-links a:hover{color:#fff}
+    .ft-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .ft-copy{font-size:.78rem}
+    .ft-badges{display:flex;gap:8px}
+    .ft-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.55)}
+  </style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ── -->
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#" class="nav-logo">
+      <div class="nav-ico">🦊</div>
+      <span class="nav-name">Vinted<b>AI</b></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+      <li><a href="#tarifs">Tarifs</a></li>
+      <li><a href="#outil">Générateur</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#outil" class="btn-p">Commencer — Gratuit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-badge">⚡ Propulsé par Claude AI · Vendeur 5 étoiles</div>
+  <h1>Commencez à vendre comme un <em>Pro Vinted</em> en quelques secondes</h1>
+  <p>Déposez vos photos de vêtements et obtenez instantanément titre, description, hashtags stratégiques et prix du marché réel.</p>
+  <div class="hero-btns">
+    <a href="#outil" class="btn-hero">📸 Essayer maintenant →</a>
+  </div>
+  <div class="hero-trust">
+    <span>Gratuit pour commencer</span>
+    <span>Sans inscription</span>
+    <span>Résultat en 10 secondes</span>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats">
+  <div class="stats-in">
+    <div><div class="sn">10s</div><div class="sl2">Pour générer une annonce complète</div></div>
+    <div><div class="sn">48h</div><div class="sl2">Vendez en moins de 48 heures</div></div>
+    <div><div class="sn">5⭐</div><div class="sl2">Niveau vendeur professionnel</div></div>
+  </div>
+</div>
+
+<!-- ── OUTIL ── -->
+<section class="tool-sec" id="outil">
+  <div class="sec-hd">
+    <div class="sec-lbl">Générateur d'annonces IA</div>
+    <div class="sec-ttl">Déposez vos photos, l'IA fait le reste</div>
+    <div class="sec-sub">Jusqu'à 12 photos analysées simultanément</div>
+  </div>
+  <div class="tool-wrap">
+
+    <!-- Gauche : Upload -->
+    <div class="card">
+      <div class="ch"><div class="ci">📸</div><h2>Photos du vêtement</h2></div>
+      <div class="cb">
+        <div class="drop-zone" id="drop-zone">
+          <div class="dz-icon">🖼️</div>
+          <h3>Déposez jusqu'à 12 photos ici</h3>
+          <p>Glissez-déposez toutes vos photos d'un seul coup<br>ou cliquez pour les sélectionner</p>
+          <button class="dz-btn" id="pick-btn">📂 Sélectionner les photos</button>
+          <div class="dz-fmts">
+            <span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span><span class="fmt-tag">WEBP</span>
+            <span>·</span><span>Max 12 photos · 10 Mo chacune</span>
+          </div>
+        </div>
+        <div id="photos-section">
+          <div class="photos-header">
+            <div class="photos-count"><span id="nb-count">0</span> photo(s) sélectionnée(s)</div>
+            <button class="add-more-link" id="add-more-btn">+ Ajouter / Modifier</button>
+          </div>
+          <div class="photos-grid" id="photos-grid"></div>
+          <div class="ctr-row">
+            <div class="dots" id="dots"></div>
+            <span class="ctr-txt" id="ctr-txt"></span>
+          </div>
+        </div>
+        <input type="file" id="fi" accept="image/*" multiple>
+        <div class="err" id="err"></div>
+        <button id="gen-btn" disabled>
+          <div class="spin" id="spin"></div>
+          <span id="btxt">Ajoutez au moins 1 photo</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Droite : Résultats -->
+    <div class="card">
+      <div class="ch"><div class="ci">✨</div><h2>Annonce professionnelle</h2></div>
+      <div class="cb">
+        <div class="empty-s" id="empty-s">
+          <div class="ei">🏆</div>
+          <p>Ajoutez jusqu'à <strong>12 photos</strong> de votre vêtement<br>et l'IA génère une annonce comme un<br><strong>vendeur professionnel Vinted 5⭐</strong>.<br><br>
+          • Prix basé sur le marché réel<br>
+          • Description + hashtags ciblés pour vendre vite</p>
+        </div>
+        <div class="load-s" id="load-s">
+          <div class="bspin"></div>
+          <strong>Génération de votre annonce pro…</strong>
+          <p>Analyse des photos + recherche des prix</p>
+          <ul class="lsteps" id="lsteps"></ul>
+        </div>
+        <div id="result">
+          <div class="pstrip" id="pstrip"></div>
+          <div class="tblock">
+            <div class="lbl">Titre de l'annonce</div>
+            <div class="tv" id="r-titre"></div>
+            <div class="nbadge" id="r-nb"></div>
+            <button class="cb1" onclick="cp('r-titre',this)">Copier</button>
+          </div>
+          <div class="trow" id="r-tags"></div>
+          <div class="sec">
+            <div class="sl">📐 Mensurations estimées</div>
+            <div class="mens-box"><p id="r-mens"></p></div>
+          </div>
+          <div class="sec">
+            <div class="sl">💰 Estimation du prix</div>
+            <div class="mk-card">
+              <div class="mk-head">
+                <div>
+                  <div class="mk-title"><span id="mk-icon">📊</span><span id="mk-label">Prix du marché</span><span class="mk-source-badge src-marche" id="mk-badge">Vinted + LeBonCoin</span></div>
+                  <div class="mk-nb" id="mk-nb"></div>
+                </div>
+              </div>
+              <div class="prix-trio">
+                <div class="pt"><div class="ptl">Minimum</div><div class="ptv" id="p-min">—</div></div>
+                <div class="pt rec"><div class="ptl">⭐ Recommandé</div><div class="ptv" id="p-rec">—</div></div>
+                <div class="pt"><div class="ptl">Maximum</div><div class="ptv" id="p-max">—</div></div>
+              </div>
+              <div class="pb-wrap" id="pb-wrap" style="display:none">
+                <div class="pb-track"><div class="pb-range" id="pb-range"></div><div class="pb-dot" id="pb-dot"></div></div>
+                <div class="pb-labels"><span id="pb-lmin"></span><span id="pb-lmax"></span></div>
+              </div>
+              <div class="plat-row" id="mk-plats" style="display:none"></div>
+              <ul class="src-list" id="mk-src" style="display:none"></ul>
+              <div class="no-market" id="mk-nodata" style="display:none">🤖 Prix estimé par l'IA — aucune annonce similaire trouvée en ligne.</div>
+              <div class="just" id="mk-just"></div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sl">🔍 État constaté</div>
+            <div class="etat-box" id="r-etat"></div>
+          </div>
+          <div class="sec">
+            <div class="sl">✨ Accroche</div>
+            <div class="tbox"><span id="r-short"></span><button class="cb2" onclick="cp('r-short',this)">Copier</button></div>
+          </div>
+          <div class="sec">
+            <div class="sl">📝 Description complète</div>
+            <div class="tbox"><span id="r-desc"></span><button class="cb2" onclick="cp('r-desc',this)">Copier</button></div>
+          </div>
+          <div class="sec">
+            <div class="sl">💎 Arguments de vente</div>
+            <ul class="pts" id="r-pts"></ul>
+          </div>
+          <div class="div"></div>
+          <div class="sec">
+            <div class="sl">🏷️ Hashtags stratégiques <span style="font-weight:400;text-transform:none;letter-spacing:0">(clic = copier)</span></div>
+            <div class="ht-groups" id="r-ht-groups"></div>
+            <div class="ht-just" id="r-htj"></div>
+            <button class="cp-ht-btn" onclick="cpAllHt()">📋 Copier tous les hashtags</button>
+          </div>
+          <div class="div"></div>
+          <div class="sec">
+            <div class="sl">📸 Améliorez vos photos</div>
+            <ul class="photo-tips" id="r-ptips"></ul>
+          </div>
+          <div class="sec">
+            <div class="sl">🌀 Entretien</div>
+            <div class="tbox" style="font-size:.8rem"><span id="r-lav"></span></div>
+          </div>
+          <div class="sec">
+            <div class="sl">🚀 Conseils pour vendre en 48h</div>
+            <ul class="tips" id="r-tips"></ul>
+          </div>
+          <button class="cp-all-btn" onclick="cpAll()">📋 Copier toute l'annonce Vinted</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FONCTIONNALITÉS ── -->
+<section class="features" id="fonctionnalites">
+  <div class="sec-hd">
+    <div class="sec-lbl">Fonctionnalités</div>
+    <div class="sec-ttl">Tout ce dont vous avez besoin pour vendre vite</div>
+    <div class="sec-sub">Notre IA analyse chaque détail de vos photos pour créer l'annonce parfaite</div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-ico">☕</div><div class="feat-title">Génération instantanée</div><div class="feat-desc">Annonce complète en quelques secondes. Fini de passer des heures à rédiger vos descriptions.</div></div>
+    <div class="feat-card"><div class="feat-ico">📸</div><div class="feat-title">Analyse de photos IA</div><div class="feat-desc">L'IA lit les étiquettes, identifie la marque, la taille, la matière et l'état du vêtement.</div></div>
+    <div class="feat-card"><div class="feat-ico">✍️</div><div class="feat-title">Description professionnelle</div><div class="feat-desc">Texte accrocheur niveau vendeur 5 étoiles avec emojis, arguments de vente et conseils.</div></div>
+    <div class="feat-card"><div class="feat-ico">💰</div><div class="feat-title">Prix du marché réel</div><div class="feat-desc">Basé sur les vraies annonces Vinted &amp; LeBonCoin pour un prix compétitif et honnête.</div></div>
+    <div class="feat-card"><div class="feat-ico">🌍</div><div class="feat-title">Hashtags stratégiques</div><div class="feat-desc">10 à 15 hashtags ciblés par catégorie : marque, style, taille, tendance et occasion.</div></div>
+    <div class="feat-card"><div class="feat-ico">⚡</div><div class="feat-title">Ultra rapide</div><div class="feat-desc">Déposez jusqu'à 12 photos simultanément. L'IA analyse tout en une seule passe.</div></div>
+  </div>
+</section>
+
+<!-- ── TARIFS ── -->
+<section class="pricing" id="tarifs">
+  <div class="sec-hd">
+    <div class="sec-lbl">Tarifs</div>
+    <div class="sec-ttl">Tarifs simples et transparents</div>
+    <div class="sec-sub">Commencez gratuitement. Passez à la vitesse supérieure quand vous êtes prêt.</div>
+  </div>
+  <div class="price-grid">
+
+    <div class="pc">
+      <div class="pc-name">Gratuit</div>
+      <div class="pc-price"><span class="amt">0€</span></div>
+      <div class="pc-ppg">Pour toujours gratuit</div>
+      <div class="pc-gen">5 générations / mois</div>
+      <ul class="pc-feats">
+        <li>Analyse de photos IA</li>
+        <li>Description complète</li>
+        <li>Hashtags de base</li>
+        <li>Estimation prix IA</li>
+      </ul>
+      <button class="pc-btn" onclick="document.getElementById('outil').scrollIntoView({behavior:'smooth'})">Commencer gratuitement</button>
+    </div>
+
+    <div class="pc">
+      <div class="pc-name">Starter</div>
+      <div class="pc-price"><span class="amt">9.99€</span><span class="per">/mois</span></div>
+      <div class="pc-ppg">0.10€ par annonce</div>
+      <div class="pc-gen">100 générations / mois</div>
+      <ul class="pc-feats">
+        <li>Tout le plan Gratuit</li>
+        <li>Prix marché Vinted &amp; LBC</li>
+        <li>Hashtags stratégiques</li>
+        <li>Conseils photos pro</li>
+      </ul>
+      <button class="pc-btn" onclick="document.getElementById('outil').scrollIntoView({behavior:'smooth'})">Choisir Starter</button>
+    </div>
+
+    <div class="pc pop">
+      <div class="pop-badge">⭐ Populaire</div>
+      <div class="pc-name">Pro</div>
+      <div class="pc-price"><span class="amt">29.99€</span><span class="per">/mois</span></div>
+      <div class="pc-ppg">0.075€ par annonce</div>
+      <div class="pc-gen">400 générations / mois</div>
+      <ul class="pc-feats">
+        <li>Tout le plan Starter</li>
+        <li>Jusqu'à 12 photos / annonce</li>
+        <li>Conseils vente avancés</li>
+        <li>Support prioritaire</li>
+      </ul>
+      <button class="pc-btn primary" onclick="document.getElementById('outil').scrollIntoView({behavior:'smooth'})">Choisir Pro</button>
+    </div>
+
+    <div class="pc">
+      <div class="pc-name">Premium</div>
+      <div class="pc-price"><span class="amt">59.99€</span><span class="per">/mois</span></div>
+      <div class="pc-ppg">0.06€ par annonce</div>
+      <div class="pc-gen">1 000 générations / mois</div>
+      <ul class="pc-feats">
+        <li>Tout le plan Pro</li>
+        <li>Accès API</li>
+        <li>Exports en masse</li>
+        <li>Support dédié</li>
+      </ul>
+      <button class="pc-btn" onclick="document.getElementById('outil').scrollIntoView({behavior:'smooth'})">Choisir Premium</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="ft-in">
+    <div class="ft-top">
+      <div>
+        <div class="ft-logo"><div class="ft-logo-ico">🦊</div><span class="ft-logo-txt">VintedAI</span></div>
+        <p class="ft-desc">L'outil IA pour vendre vos vêtements sur Vinted comme un professionnel. Annonces générées en quelques secondes.</p>
+      </div>
+      <div>
+        <div class="ft-col-ttl">Produit</div>
+        <ul class="ft-links">
+          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+          <li><a href="#tarifs">Tarifs</a></li>
+          <li><a href="#outil">Essayer</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-col-ttl">Support</div>
+        <ul class="ft-links">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-col-ttl">Légal</div>
+        <ul class="ft-links">
+          <li><a href="#">Confidentialité</a></li>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2026 VintedAI. Tous droits réservés.</span>
+      <div class="ft-badges">
+        <span class="ft-badge">🤖 Claude AI</span>
+        <span class="ft-badge">🇫🇷 Made in France</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const MAX = 12;
+const SLOT_LABELS = ['Face','Dos','Étiquette','Détail','Défaut','Zoom','Couleur','Coupe','Finition','Style','Vue 3/4','Autre'];
+let photos = [];
+
+const dropZone   = document.getElementById('drop-zone');
+const fileInput  = document.getElementById('fi');
+const pickBtn    = document.getElementById('pick-btn');
+const addMoreBtn = document.getElementById('add-more-btn');
+const photosSec  = document.getElementById('photos-section');
+const photosGrid = document.getElementById('photos-grid');
+const genBtn     = document.getElementById('gen-btn');
+const btxt       = document.getElementById('btxt');
+const spin       = document.getElementById('spin');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', e => { if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('over'); });
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('over'); addFiles(e.dataTransfer.files); });
+dropZone.addEventListener('click', e => { if (e.target === pickBtn || pickBtn.contains(e.target)) return; fileInput.click(); });
+pickBtn.addEventListener('click', e => { e.stopPropagation(); fileInput.click(); });
+addMoreBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+
+function addFiles(fileList) {
+  const allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+  const toAdd = [...fileList].filter(f => allowed.includes(f.type) && f.size <= 10*1024*1024);
+  if (!toAdd.length) { showErr('Aucune image valide (JPG, PNG, WEBP uniquement, max 10 Mo)'); return; }
+  document.getElementById('err').style.display = 'none';
+  let added = 0;
+  toAdd.forEach(f => {
+    if (photos.length >= MAX) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      photos.push({ file: f, url: e.target.result });
+      added++;
+      if (added === Math.min(toAdd.length, MAX - (photos.length - added))) renderGrid();
+    };
+    reader.readAsDataURL(f);
+  });
+  if (photos.length + toAdd.length > MAX) showErr(`Maximum ${MAX} photos — les photos supplémentaires ont été ignorées.`);
+}
+
+function renderGrid() {
+  photosGrid.innerHTML = '';
+  photos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'photo-thumb';
+    div.innerHTML = `<img src="${p.url}" alt="Photo ${i+1}"><div class="th-num">${i+1}</div><div class="th-label">${SLOT_LABELS[i] || 'Photo '+(i+1)}</div><button class="th-rm" data-i="${i}" title="Supprimer">×</button>`;
+    div.querySelector('.th-rm').addEventListener('click', e => { e.stopPropagation(); photos.splice(parseInt(e.target.dataset.i), 1); renderGrid(); });
+    photosGrid.appendChild(div);
+  });
+  updateUI();
+}
+
+function updateUI() {
+  const n = photos.length;
+  dropZone.style.display  = n === 0 ? 'block' : 'none';
+  photosSec.style.display = n > 0   ? 'block'  : 'none';
+  document.getElementById('nb-count').textContent = n;
+  document.getElementById('ctr-txt').textContent  = `${n} / ${MAX} photos`;
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < MAX; i++) { const d = document.createElement('div'); d.className = 'dot' + (i < n ? ' on' : ''); dotsEl.appendChild(d); }
+  genBtn.disabled = n === 0;
+  btxt.textContent = n === 0 ? 'Ajoutez au moins 1 photo' : `⚡ Générer l'annonce (${n} photo${n > 1 ? 's' : ''})`;
+}
+updateUI();
+
+const STEPS = [
+  {t:'Lecture des photos…', m:''},
+  {t:'Identification marque, taille, matière…', m:''},
+  {t:'Analyse de l\'état et des défauts…', m:''},
+  {t:'Rédaction description style vendeur pro…', m:''},
+  {t:'Création des hashtags stratégiques…', m:''},
+  {t:'Recherche des prix sur Vinted & LeBonCoin…', m:'market'},
+  {t:'Calcul du prix recommandé…', m:'market'},
+];
+
+genBtn.addEventListener('click', async () => {
+  if (!photos.length) return;
+  document.getElementById('err').style.display = 'none';
+  genBtn.disabled = true;
+  spin.style.display = 'block';
+  btxt.textContent = 'En cours…';
+  document.getElementById('empty-s').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+  const ls = document.getElementById('load-s');
+  ls.style.display = 'block';
+  const stEl = document.getElementById('lsteps');
+  stEl.innerHTML = '';
+  STEPS[0].t = `Lecture des ${photos.length} photo${photos.length > 1 ? 's' : ''}…`;
+  let si = 0;
+  const stI = setInterval(() => {
+    if (si < STEPS.length) {
+      const li = document.createElement('li');
+      li.textContent = STEPS[si].t;
+      if (STEPS[si].m === 'market') li.classList.add('market');
+      stEl.appendChild(li);
+      setTimeout(() => li.classList.add('show'), 30);
+      si++;
+    }
+  }, 1600);
+  try {
+    const fd = new FormData();
+    photos.forEach((p, i) => fd.append('images', p.file, (SLOT_LABELS[i] || `photo${i+1}`).toLowerCase().replace(/\s/g,'_') + '.jpg'));
+    const res = await fetch('/analyze', { method: 'POST', body: fd });
+    const data = await res.json();
+    clearInterval(stI);
+    stEl.querySelectorAll('li').forEach(l => l.classList.add('done'));
+    if (!res.ok) throw new Error(data.error || `Erreur ${res.status}`);
+    await new Promise(r => setTimeout(r, 400));
+    ls.style.display = 'none';
+    renderResult(data);
+  } catch(e) {
+    clearInterval(stI);
+    ls.style.display = 'none';
+    document.getElementById('empty-s').style.display = 'block';
+    showErr(e.message);
+  } finally {
+    genBtn.disabled = false;
+    spin.style.display = 'none';
+    btxt.textContent = `⚡ Regénérer (${photos.length} photo${photos.length > 1 ? 's' : ''})`;
+  }
+});
+
+function etatCls(e) {
+  if (!e) return 'e3'; const t = e.toLowerCase();
+  if (t.includes('étiquette')) return 'e1';
+  if (t.includes('neuf')) return 'e2';
+  if (t.includes('très bon') || t.includes('tres bon')) return 'e3';
+  if (t.includes('bon')) return 'e4';
+  return 'e5';
+}
+
+function renderResult(d) {
+  const strip = document.getElementById('pstrip'); strip.innerHTML = '';
+  photos.forEach(p => { const img = document.createElement('img'); img.src = p.url; strip.appendChild(img); });
+  document.getElementById('r-titre').textContent = d.titre || '';
+  document.getElementById('r-nb').textContent = `📸 Analysé avec ${d.nb_photos} photo${d.nb_photos > 1 ? 's' : ''}`;
+  const tags = [{e:'🏷️',l:'Catégorie',v:d.categorie},{e:'✂️',l:'Marque',v:d.marque},{e:'📏',l:'Taille',v:d.taille},{e:'🎨',l:'Couleur',v:d.couleur_principale},{e:'🧵',l:'Matière',v:d.matiere}].filter(t => t.v);
+  document.getElementById('r-tags').innerHTML = tags.map(t=>`<div class="tag"><span class="te">${t.e}</span><div><span class="tl">${t.l}</span><span class="tv2">${t.v}</span></div></div>`).join('') + (d.etat ? `<div class="tag"><span class="te">⭐</span><div><span class="tl">État</span><span class="eb ${etatCls(d.etat)}">${d.etat}</span></div></div>` : '');
+  document.getElementById('r-mens').textContent = d.mensurations_estimees || 'Non disponible sur les photos fournies';
+  renderPrix(d);
+  const hasD = d.defauts && !d.defauts.toLowerCase().includes('aucun');
+  const eEl = document.getElementById('r-etat');
+  eEl.className = 'etat-box ' + (hasD ? 'etat-warn' : 'etat-ok');
+  eEl.innerHTML = (hasD ? '⚠️ ' : '✅ ') + `<div><strong>${d.etat}</strong> — ${d.etat_detail || d.etat_justification || ''}${d.defauts && !d.defauts.toLowerCase().includes('aucun') ? '<br><em>Défauts : ' + d.defauts + '</em>' : ''}</div>`;
+  document.getElementById('r-short').textContent = d.description_accroche || '';
+  document.getElementById('r-desc').textContent  = d.description_complete || '';
+  document.getElementById('r-pts').innerHTML  = (d.points_forts || []).map(p => `<li>${p}</li>`).join('');
+  document.getElementById('r-lav').textContent = d.instructions_lavage || 'Non visible sur les photos';
+  document.getElementById('r-tips').innerHTML = (d.conseils_vente || []).map((c,i) => `<li><div class="tipn">${i+1}</div><span>${c}</span></li>`).join('');
+  document.getElementById('r-ptips').innerHTML = (d.conseils_photos || []).map(c => `<li>${c}</li>`).join('');
+  renderHashtags(d);
+  document.getElementById('result').style.display = 'block';
+}
+
+function renderPrix(d) {
+  const src = d.prix_source;
+  const prec = parseInt(d.prix_suggere)||0, pmin = parseInt(d.prix_min)||0, pmax = parseInt(d.prix_max)||0;
+  document.getElementById('p-min').textContent = pmin ? pmin+'€' : '—';
+  document.getElementById('p-rec').textContent = prec ? prec+'€' : '—';
+  document.getElementById('p-max').textContent = pmax ? pmax+'€' : '—';
+  document.getElementById('mk-just').textContent = d.prix_justification || '';
+  if (src === 'ia') {
+    document.getElementById('mk-icon').textContent = '🤖';
+    document.getElementById('mk-label').textContent = 'Prix estimé par l\'IA';
+    const b = document.getElementById('mk-badge'); b.textContent = 'Intelligence Artificielle'; b.className = 'mk-source-badge src-ia';
+    document.getElementById('mk-nb').textContent = 'Aucune annonce similaire trouvée en ligne — estimation basée sur la connaissance du marché';
+    document.getElementById('pb-wrap').style.display = 'none';
+    document.getElementById('mk-plats').style.display = 'none';
+    document.getElementById('mk-src').style.display = 'none';
+    document.getElementById('mk-nodata').style.display = 'block';
+    return;
+  }
+  const mk = d.market_data || {}, stats = mk.stats, prices = mk.prices || [];
+  document.getElementById('mk-nb').textContent = stats ? `Basé sur ${stats.nb} annonces réelles` : '';
+  document.getElementById('mk-nodata').style.display = 'none';
+  if (stats && prices.length > 0) {
+    document.getElementById('pb-wrap').style.display = 'block';
+    const range = stats.max - stats.min || 1;
+    document.getElementById('pb-range').style.cssText = `left:${((stats.q1-stats.min)/range*100).toFixed(1)}%;width:${Math.max(((stats.q3-stats.q1)/range*100),5).toFixed(1)}%`;
+    document.getElementById('pb-dot').style.left = `${Math.min(Math.max(((prec-stats.min)/range*100),2),98).toFixed(1)}%`;
+    document.getElementById('pb-lmin').textContent = stats.min+'€';
+    document.getElementById('pb-lmax').textContent = stats.max+'€';
+    const plats = [...new Set(prices.map(p=>p.platform))];
+    const plEl = document.getElementById('mk-plats'); plEl.style.display = 'flex';
+    plEl.innerHTML = plats.map(p=>`<span class="plat ${p==='Vinted'?'pv':'pl'}">${p==='Vinted'?'💚':'🟡'} ${p} (${prices.filter(x=>x.platform===p).length})</span>`).join('');
+    const srcEl = document.getElementById('mk-src'); srcEl.style.display = 'block';
+    srcEl.innerHTML = prices.slice(0,10).map(p=>`<li><span class="src-badge ${p.platform==='Vinted'?'sb-v':'sb-l'}">${p.platform}</span><span class="src-t">${p.titre}</span><span class="src-p">${p.prix}€</span>${p.url?`<a href="${p.url}" target="_blank" class="src-a">↗</a>`:''}</li>`).join('');
+  }
+}
+
+function renderHashtags(d) {
+  const grpsEl = document.getElementById('r-ht-groups'); grpsEl.innerHTML = '';
+  const htObj = d.hashtags || {}, flat = d.hashtags_flat || [];
+  const GRP = { marque:{l:'Marque',c:'ht-marque'}, type:{l:'Type',c:'ht-type'}, style:{l:'Style',c:'ht-style'}, tendance:{l:'Tendance',c:'ht-tendance'}, taille:{l:'Taille',c:'ht-taille'}, occasion:{l:'Occasion',c:'ht-occasion'} };
+  let has = false;
+  Object.entries(GRP).forEach(([k,cfg]) => {
+    const hts = htObj[k]; if (!hts || !hts.length) return; has = true;
+    const g = document.createElement('div'); g.className = 'ht-group';
+    g.innerHTML = `<div class="ht-group-label">${cfg.l}</div><div class="ht-chips">${hts.map(h=>`<button class="ht ${cfg.c}" onclick="cpHt(this,'${h}')">${h}</button>`).join('')}</div>`;
+    grpsEl.appendChild(g);
+  });
+  if (!has && flat.length) {
+    const g = document.createElement('div'); g.className = 'ht-group';
+    g.innerHTML = `<div class="ht-chips">${flat.map(h=>`<button class="ht ht-style" onclick="cpHt(this,'${h}')">${h}</button>`).join('')}</div>`;
+    grpsEl.appendChild(g);
+  }
+  document.getElementById('r-htj').textContent = d.hashtags_justification || '';
+}
+
+function cp(id, btn) {
+  const el = document.getElementById(id); if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const o = btn.textContent; btn.textContent = '✓ Copié!'; btn.classList.add('cpd');
+    setTimeout(() => { btn.classList.remove('cpd'); btn.textContent = o; }, 1800);
+  });
+}
+function cpHt(el, txt) { navigator.clipboard.writeText(txt).then(() => { el.classList.add('cp'); setTimeout(() => el.classList.remove('cp'), 1200); }); }
+function cpAllHt() {
+  const all = [...document.querySelectorAll('.ht')].map(h => h.textContent).join(' ');
+  navigator.clipboard.writeText(all).then(() => {
+    const btn = document.querySelector('.cp-ht-btn'); btn.textContent = '✓ Hashtags copiés!';
+    setTimeout(() => btn.textContent = '📋 Copier tous les hashtags', 1800);
+  });
+}
+function cpAll() {
+  const txt = `${document.getElementById('r-titre').textContent}\n\n${document.getElementById('r-desc').textContent}\n\n${[...document.querySelectorAll('.ht')].map(h=>h.textContent).join(' ')}\n\nPrix : ${document.getElementById('p-rec').textContent}`;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.querySelector('.cp-all-btn'); btn.textContent = '✓ Annonce copiée!';
+    setTimeout(() => btn.textContent = '📋 Copier toute l\'annonce Vinted', 2500);
+  });
+}
+function showErr(m) { const e = document.getElementById('err'); e.textContent = '❌ ' + m; e.style.display = 'block'; }
+</script>
+</body>
+</html>
